@@ -17,15 +17,16 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/b_retrieveAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:onClick="buttonGetData"
                 android:text="retrieve random numbers" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/b_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
