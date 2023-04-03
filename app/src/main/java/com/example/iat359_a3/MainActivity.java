@@ -184,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         item2.setText("___");
         item3.setText("___");
         item4.setText("___");
+        mutip2.setText("mutiples of 2");
+        mutip3.setText("mutiples of 3");
+        mutip5.setText("mutiples of 5");
+        mutip10.setText("mutiples of 10");
+
         results.clear();
     }
 
@@ -286,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             if (is != null) {
                 is.close();
                 Log.d("readJSONData", "is is null, closing");
-
             }
             Log.d("readJSONData", "closing");
             conn.disconnect();
