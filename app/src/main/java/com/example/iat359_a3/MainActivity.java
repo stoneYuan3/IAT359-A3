@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private TextView item1,item2,item3,item4;
     private TextView mutip2,mutip3,mutip5,mutip10;
     private Button b_retrieveAll,b_clear;
+    private ArrayList results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mutip3 = (TextView) findViewById(R.id.mutip3);
         mutip5 = (TextView) findViewById(R.id.mutip5);
         mutip10 = (TextView) findViewById(R.id.mutip10);
+
+        results = new ArrayList();
     }
 
     @Override
@@ -81,32 +85,40 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     private String result, url;
+    private JSONObject jsonObj;
     public void buttonGetData(View view) {
         Log.d("buttonGetData", "running");
 
         url = "https://qrng.anu.edu.au/API/jsonI.php?length=4&type=uint8";
-        Thread myThread = new Thread(new GetWeatherThread());
+        Thread myThread = new Thread(new GetData());
         myThread.start();
 
-        try {
-            JSONObject jsonObject = new JSONObject(result);
-//            JSONObject weatherObservationItems = new JSONObject(jsonObject.getString("weatherObservation"));
+//        if(results.size()==4){
+//            item1.setText(String.valueOf(results.get(0)));
+//            item2.setText(String.valueOf(results.get(1)));
+//            item3.setText(String.valueOf(results.get(2)));
+//            item4.setText(String.valueOf(results.get(3)));
+//        }
 
-            JSONArray numarr = new JSONArray(jsonObject.getJSONArray("data"));
-
-            for (int i=0;i<numarr.length();i++){
-                Object element = numarr.get(i);
-                String dataEach = element.toString();
-                Log.d("result", dataEach);
-            }
-
-            //set result to textviews
-        } catch (Exception e) {
-            Log.d("ReadWeatherJSONDataTask", e.getLocalizedMessage());
-        }
+//        try {
+////            JSONObject jsonObject = new JSONObject(result);
+////            JSONObject weatherObservationItems = new JSONObject(jsonObject.getString("weatherObservation"));
+//
+//            JSONArray numarr = jsonObj.getJSONArray("data");
+//
+//            for (int i=0;i<numarr.length();i++){
+//                JSONObject element = numarr.getJSONObject(i);
+//                String dataEach = element.toString();
+//                Log.d("result", dataEach);
+//            }
+//
+//            //set result to textviews
+//        } catch (Exception e) {
+//            Log.d("ReadWeatherJSONDataTask", e.getLocalizedMessage());
+//        }
     }
 
-    private class GetWeatherThread implements Runnable
+    private class GetData implements Runnable
     {
         @Override
         public void run() {
@@ -120,19 +132,42 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             try{
                 JSONObject jsonObj =new JSONObject(result);
+                jsonObj = new JSONObject(result);
                 Log.d("run", jsonObj.toString());
 
                 JSONArray numarr = jsonObj.getJSONArray("data");
+                Log.d("run", numarr.toString());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, numarr.toString(), Toast.LENGTH_SHORT).show();
+                        item1.setText(String.valueOf(results.get(0)));
+                        item2.setText(String.valueOf(results.get(1)));
+                        item3.setText(String.valueOf(results.get(2)));
+                        item4.setText(String.valueOf(results.get(3)));
+                    }
+                });
 
                 for (int i=0;i<numarr.length();i++){
-                    JSONObject element = numarr.getJSONObject(i);
-                    String dataEach = element.toString();
-                    Log.d("result", dataEach);
+                    int element = numarr.getInt(i);
+                    String dataEach = String.valueOf(element);
+                    Log.d("result "+i, dataEach);
+                    results.add(element);
                 }
 
             }
             catch (Exception e){
                 Log.d("ReadWeatherJSON", e.getLocalizedMessage());
+                if(jsonObj == null){
+                    Log.d("APIresult", "API returns null, wait for 1 minute");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "API returns null, wait for 1 minute", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
 
         }
@@ -170,7 +205,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
-        } finally {
+        }catch (Exception e){
+            throw e;
+        }
+        finally {
             if (is != null) {
                 is.close();
             }
