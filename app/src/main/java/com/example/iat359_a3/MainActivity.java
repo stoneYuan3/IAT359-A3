@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         catch (Exception e){
             result = false;
+            Log.e("dragdrop", String.valueOf(e));
         }
         Log.d("dragdrop","mutip" + rootNum + " is dropped upon, result is: "+result);
         return result;
@@ -112,29 +113,30 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             case DragEvent.ACTION_DROP:
                 //handle the dragged view being dropped over a target view
                 View view = (View) dragEvent.getLocalState();
+                TextView dropped = (TextView) view;
                 //view dragged item is being dropped on
                 TextView dropTarget = (TextView) v;
-                boolean droppable = false;
+                boolean droppable;
 
                 if(dropTarget.getId()==mutip2.getId()){
-                    droppable=identifyDrop(mutip2,2);
+                    droppable=identifyDrop(dropped,2);
                 }
                 else if (dropTarget.getId()==mutip3.getId()){
-                    droppable=identifyDrop(mutip3,3);
+                    droppable=identifyDrop(dropped,3);
                 }
                 else if (dropTarget.getId()==mutip5.getId()){
-                    droppable=identifyDrop(mutip5,5);
+                    droppable=identifyDrop(dropped,5);
                 }
                 else if (dropTarget.getId()==mutip10.getId()){
-                    droppable=identifyDrop(mutip10,10);
+                    droppable=identifyDrop(dropped,10);
                 }
                 else{
                     Log.d("dragdrop","doesnt belong to any existing dropbox");
+                    droppable=false;
                 }
 
                 if(droppable){
                     //view being dragged and dropped
-                    TextView dropped = (TextView) view;
                     //update the text in the target view to reflect the data being dropped
                     dropTarget.setText(""+ dropTarget.getText()+"\n" +dropped.getText());
                     dropped.setText("");
@@ -150,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return true;
     }
-    
+
     //check if device is connected to wifi at the start of the app
     public void checkConnection(){
         ConnectivityManager connectMgr =
@@ -227,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             catch (Exception e){
-                Log.d("ReadWeatherJSON", e.getLocalizedMessage());
+                Log.d("GetDataReadJSON", e.getLocalizedMessage());
                 if(jsonObj == null || result==null){
                     Log.d("APIresult", "API returns null, wait for 1 minute");
                     runOnUiThread(new Runnable() {
