@@ -92,37 +92,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         url = "https://qrng.anu.edu.au/API/jsonI.php?length=4&type=uint8";
         Thread myThread = new Thread(new GetData());
         myThread.start();
-
-//        if(results.size()==4){
-//            item1.setText(String.valueOf(results.get(0)));
-//            item2.setText(String.valueOf(results.get(1)));
-//            item3.setText(String.valueOf(results.get(2)));
-//            item4.setText(String.valueOf(results.get(3)));
-//        }
-
-//        try {
-////            JSONObject jsonObject = new JSONObject(result);
-////            JSONObject weatherObservationItems = new JSONObject(jsonObject.getString("weatherObservation"));
-//
-//            JSONArray numarr = jsonObj.getJSONArray("data");
-//
-//            for (int i=0;i<numarr.length();i++){
-//                JSONObject element = numarr.getJSONObject(i);
-//                String dataEach = element.toString();
-//                Log.d("result", dataEach);
-//            }
-//
-//            //set result to textviews
-//        } catch (Exception e) {
-//            Log.d("ReadWeatherJSONDataTask", e.getLocalizedMessage());
-//        }
+    }
+    public void buttonClearAll(View view){
+        Toast.makeText(MainActivity.this, "clear all", Toast.LENGTH_SHORT).show();
+        item1.setText("___");
+        item2.setText("___");
+        item3.setText("___");
+        item4.setText("___");
+        results.clear();
     }
 
     private class GetData implements Runnable
     {
         @Override
         public void run() {
-//            Log.d("GetWeatherThread", "running");
+            Log.d("GetWeatherThread", "running");
 
             Exception exception = null;
             try{
@@ -131,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 exception = e;
             }
             try{
-                JSONObject jsonObj =new JSONObject(result);
+//                JSONObject jsonObj =new JSONObject(result);
                 jsonObj = new JSONObject(result);
                 Log.d("run", jsonObj.toString());
 
